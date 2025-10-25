@@ -31,23 +31,22 @@ export function LoginPage() {
 
     try {
       // Имитация запроса к API
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
       // Здесь будет реальная логика авторизации
       console.log("Login attempt:", { email, password, rememberMe });
-      
+
       // Пример обработки ошибки
       if (!email || !password) {
         throw new Error("Заполните все поля");
       }
-      
-      if (!email.includes('@')) {
+
+      if (!email.includes("@")) {
         throw new Error("Введите корректный email");
       }
-      
+
       // Успешная авторизация
       // navigate('/dashboard');
-      
     } catch (err) {
       setError(err instanceof Error ? err.message : "Ошибка авторизации");
     } finally {
@@ -58,7 +57,7 @@ export function LoginPage() {
   const handleForgotPassword = (e: React.MouseEvent) => {
     e.preventDefault();
     console.log("Инициирован процесс восстановления пароля");
-    
+
     // Здесь можно добавить логику для восстановления пароля
     if (email) {
       console.log(`Отправка ссылки для восстановления на email: ${email}`);
@@ -102,22 +101,22 @@ export function LoginPage() {
             <img
               src="/logo_rt_horiz_ru.png"
               alt="Логотип Ростелеком"
-              style={{ 
-                width: "250px", 
+              style={{
+                width: "250px",
                 marginBottom: "16px",
-                filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))"
+                filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))",
               }}
             />
-            <Typography 
-              component="h1" 
-              variant="h4" 
-              sx={{ 
+            <Typography
+              component="h1"
+              variant="h4"
+              sx={{
                 fontWeight: 600,
                 background: "linear-gradient(135deg, #ff6b35 0%, #8e44ad 100%)",
                 backgroundClip: "text",
                 WebkitBackgroundClip: "text",
                 color: "transparent",
-                mb: 1
+                mb: 1,
               }}
             >
               Умный склад
@@ -127,17 +126,21 @@ export function LoginPage() {
             </Typography>
           </Box>
 
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2, width: "100%" }}>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{ mt: 2, width: "100%" }}
+          >
             {/* Блок ошибок */}
             {error && (
-              <Alert 
-                severity="error" 
-                sx={{ 
+              <Alert
+                severity="error"
+                sx={{
                   mb: 2,
                   borderRadius: 2,
                   "& .MuiAlert-icon": {
-                    color: "error.main"
-                  }
+                    color: "error.main",
+                  },
                 }}
               >
                 {error}
@@ -224,8 +227,8 @@ export function LoginPage() {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ 
-                mt: 3, 
+              sx={{
+                mt: 3,
                 mb: 2,
                 py: 1.5,
                 borderRadius: 2,
@@ -233,7 +236,8 @@ export function LoginPage() {
                 fontWeight: 600,
                 background: "linear-gradient(135deg, #ff6b35 0%, #8e44ad 100%)",
                 "&:hover": {
-                  background: "linear-gradient(135deg, #e55a2b 0%, #7d3c98 100%)",
+                  background:
+                    "linear-gradient(135deg, #e55a2b 0%, #7d3c98 100%)",
                   transform: "translateY(-1px)",
                   boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
                 },
@@ -244,14 +248,18 @@ export function LoginPage() {
               }}
               disabled={loading}
             >
-              {loading ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Войти"}
+              {loading ? (
+                <CircularProgress size={24} sx={{ color: "white" }} />
+              ) : (
+                "Войти"
+              )}
             </Button>
 
             {/* Ссылка "Забыли пароль?" */}
             <Box sx={{ textAlign: "center" }}>
-              <Link 
-                href="#" 
-                variant="body2" 
+              <Link
+                href="#"
+                variant="body2"
                 onClick={handleForgotPassword}
                 sx={{
                   color: "primary.main",
@@ -273,7 +281,11 @@ export function LoginPage() {
             <Typography variant="caption" color="text.secondary">
               Система управления складскими операциями
             </Typography>
-            <Typography variant="caption" color="text.secondary" display="block">
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              display="block"
+            >
               © 2025 Ростелеком
             </Typography>
           </Box>
