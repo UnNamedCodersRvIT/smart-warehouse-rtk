@@ -71,33 +71,33 @@ export function LoginPage() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
+  setError("");
 
-    const emailValidationError = validateEmail(email);
-    if (emailValidationError) {
-      setEmailError(emailValidationError);
-      setLoading(false);
-      return;
-    }
+  const emailValidationError = validateEmail(email);
+  if (emailValidationError) {
+    setEmailError(emailValidationError);
+    setLoading(false);
+    return;
+  }
 
-    try {
-      validateForm();
+  try {
+    validateForm();
 
-      // Имитация запроса к API
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+    // Имитация запроса к API
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      console.log("Login attempt:", { email, password, rememberMe });
-      alert("Успешный вход! (В реальном приложении будет редирект)");
-      
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Ошибка авторизации");
-    } finally {
-      setLoading(false);
-    }
-  };
+    // Простой редирект на dashboard
+    window.location.href = '/dashboard';
+    
+  } catch (err) {
+    setError(err instanceof Error ? err.message : "Ошибка авторизации");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !loading) {
