@@ -13,39 +13,44 @@ export function Header({ userInfo, onLogout }: HeaderProps) {
     <AppBar 
       position="static" 
       sx={{ 
-        bgcolor: "white", 
+        background: "linear-gradient(135deg, #f5f5f5 0%, #f0f0f0 100%)",
         color: "text.primary",
-        boxShadow: 1,
-        borderBottom: 3,
-        borderColor: "error.main"
+        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+        borderRadius: 0,
+        borderBottom: "1px solid",
+        borderColor: "rgba(0,0,0,0.1)",
       }}
     >
-      <Toolbar sx={{ justifyContent: "space-between" }}>
-        {/* Левая часть - Логотип */}
-        <Box sx={{ display: "flex", alignItems: "center" }}>
+      <Toolbar sx={{ 
+        justifyContent: "space-between",
+        minHeight: "64px !important",
+      }}>
+        {/* Левая часть - Логотип и название */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <img
             src="/logo_rt_horiz_ru.png"
             alt="Логотип Ростелеком"
             style={{
-              height: "40px",
-              filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))",
+              height: "52px",
             }}
           />
-        </Box>
-
-        {/* Центральная часть - Название системы */}
-        <Box sx={{ 
-          position: "absolute", 
-          left: "50%", 
-          transform: "translateX(-50%)" 
-        }}>
+          <Box sx={{ 
+            height: "32px",
+            width: "1px", 
+            bgcolor: "black",
+            mx: 1 
+          }} />
           <Typography 
             variant="h6" 
             component="h1"
             sx={{ 
-              fontWeight: 600,
-              color: "text.primary",
-              fontSize: "1.25rem"
+              fontWeight: 500,
+              color: "black",
+              fontSize: "1.3rem",
+              letterSpacing: "-0.01em",
+              lineHeight: 1,
+              display: "flex",
+              alignItems: "center",
             }}
           >
             Умный склад
@@ -53,13 +58,14 @@ export function Header({ userInfo, onLogout }: HeaderProps) {
         </Box>
 
         {/* Правая часть - Информация о пользователе и кнопка выхода */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
           <Box sx={{ textAlign: "right" }}>
             <Typography 
               variant="subtitle1" 
               sx={{ 
-                fontWeight: 600,
-                fontSize: "0.875rem"
+                fontWeight: 500,
+                fontSize: "1rem",
+                color: "black"
               }}
             >
               {userInfo.name}
@@ -67,7 +73,7 @@ export function Header({ userInfo, onLogout }: HeaderProps) {
             <Typography 
               variant="caption" 
               sx={{ 
-                color: "text.secondary",
+                color: "blue",
                 fontSize: "0.75rem"
               }}
             >
@@ -79,17 +85,19 @@ export function Header({ userInfo, onLogout }: HeaderProps) {
             size="small"
             onClick={onLogout}
             sx={{
-              borderColor: "grey.300",
-              color: "text.primary",
+              borderColor: "red",
+              color: "#2c3e50",
               textTransform: "none",
-              fontSize: "0.875rem",
+              fontSize: "0.8rem",
+              borderRadius: 1,
+              px: 2,
               "&:hover": {
-                borderColor: "grey.400",
-                bgcolor: "grey.50"
+                borderColor: "red",
+                bgcolor: "pink"
               }
             }}
           >
-            Выход
+            Выйти
           </Button>
         </Box>
       </Toolbar>

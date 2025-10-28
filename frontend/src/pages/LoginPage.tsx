@@ -76,13 +76,6 @@ const handleSubmit = async (e: React.FormEvent) => {
   setLoading(true);
   setError("");
 
-  const emailValidationError = validateEmail(email);
-  if (emailValidationError) {
-    setEmailError(emailValidationError);
-    setLoading(false);
-    return;
-  }
-
   try {
     validateForm();
 

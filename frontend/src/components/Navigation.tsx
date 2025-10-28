@@ -63,13 +63,21 @@ export function Navigation({ activeTab, onTabChange, onCsvUpload }: NavigationPr
           onClick={onCsvUpload}
           size="medium"
           sx={{
-            bgcolor: "success.main",
-            textTransform: "none",
-            fontSize: "0.875rem",
+            background: 'linear-gradient(135deg, #4caf50 0%, #2e7d32 100%)',
+            textTransform: 'none',
+            fontSize: '0.875rem',
             fontWeight: 500,
-            "&:hover": {
-              bgcolor: "success.dark"
-            }
+            borderRadius: 2,
+            color: '#ffffff',
+            '&:hover': {
+              background: 'linear-gradient(135deg, #43a047 0%, #1b5e20 100%)',
+              transform: 'translateY(-1px)',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+            },
+            '&:disabled': {
+              transform: 'none',
+              boxShadow: 'none',
+            },
           }}
         >
           Загрузить CSV
