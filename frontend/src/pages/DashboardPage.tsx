@@ -2,19 +2,23 @@ import { useEffect } from "react";
 import { Box, Typography, Paper } from "@mui/material";
 import { Header } from "../components/Header";
 import { Navigation } from "../components/Navigation";
+import { useNavigate } from "react-router-dom";
 
 export function DashboardPage() {
+  const navigate = useNavigate();
+
   useEffect(() => {
     document.title = "Дашборд | Умный склад";
   }, []);
 
   const handleLogout = () => {
     console.log("Выход из системы");
+    navigate("/login");
   };
 
   const handleTabChange = (tab: "monitoring" | "history") => {
     if (tab === "history") {
-      window.location.href = "/history";
+      navigate("/history");
     }
   };
 
