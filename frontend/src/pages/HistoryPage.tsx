@@ -1,11 +1,12 @@
+// src/pages/HistoryPage.tsx
 import { useEffect } from "react";
 import { Box, Typography, Paper } from "@mui/material";
 import { Header } from "../components/Header";
 import { Navigation } from "../components/Navigation";
 
-export function DashboardPage() {
+export function HistoryPage() {
   useEffect(() => {
-    document.title = "Дашборд | Умный склад";
+    document.title = "Исторические данные | Умный склад";
   }, []);
 
   const handleLogout = () => {
@@ -13,8 +14,8 @@ export function DashboardPage() {
   };
 
   const handleTabChange = (tab: "monitoring" | "history") => {
-    if (tab === "history") {
-      window.location.href = "/history";
+    if (tab === "monitoring") {
+      window.location.href = "/dashboard";
     }
   };
 
@@ -34,26 +35,26 @@ export function DashboardPage() {
         onLogout={handleLogout} 
       />
       <Navigation 
-        activeTab="monitoring" 
+        activeTab="history" 
         onTabChange={handleTabChange} 
         onCsvUpload={handleCsvUpload} 
       />
       
       <Box sx={{ p: 3 }}>
         <Typography variant="h3" gutterBottom>
-          Текущий мониторинг
+          Исторические данные
         </Typography>
         <Typography variant="h6" color="text.secondary" gutterBottom>
-          Добро пожаловать в систему "Умный склад"!
+          Анализ исторических данных склада
         </Typography>
         
         <Paper sx={{ p: 3, mt: 3 }}>
           <Typography variant="h5" gutterBottom>
-            Состояние склада в реальном времени
+            Статистика за последний месяц
           </Typography>
           <Typography>
-            Здесь отображается текущая загруженность склада, активные операции 
-            и последние события.
+            Здесь будет отображаться график активности, таблица с историческими данными 
+            и аналитика по движениям товаров.
           </Typography>
         </Paper>
       </Box>

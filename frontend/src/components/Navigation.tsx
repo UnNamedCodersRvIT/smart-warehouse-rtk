@@ -1,7 +1,7 @@
-import { Paper, Tabs, Tab, Button, Box } from "@mui/material";
-import { UploadFile } from "@mui/icons-material";
+import { Box, Button, Tab, Tabs } from "@mui/material";
+import { CloudUpload } from "@mui/icons-material";
 
-export interface NavigationProps {
+interface NavigationProps {
   activeTab: "monitoring" | "history";
   onTabChange: (tab: "monitoring" | "history") => void;
   onCsvUpload: () => void;
@@ -13,76 +13,46 @@ export function Navigation({ activeTab, onTabChange, onCsvUpload }: NavigationPr
   };
 
   return (
-    <Paper 
-      sx={{ 
-        borderRadius: 0,
-        borderBottom: 1,
-        borderColor: "divider",
-        boxShadow: 1
-      }}
-    >
-      <Box sx={{ 
-        display: "flex", 
-        justifyContent: "space-between", 
-        alignItems: "center",
-        px: 3,
-        py: 0
-      }}>
-        <Tabs 
-          value={activeTab} 
-          onChange={handleTabChange}
-          textColor="primary"
-          indicatorColor="primary"
-          sx={{
-            minHeight: 48
-          }}
-        >
-          <Tab 
-            label="Текущий мониторинг" 
-            value="monitoring"
-            sx={{ 
-              fontWeight: activeTab === "monitoring" ? 600 : 400,
-              minHeight: 48,
-              fontSize: "0.875rem"
+    <Box sx={{ 
+      borderBottom: 1, 
+      borderColor: "divider", 
+      bgcolor: "white", 
+      display: 'flex', 
+      justifyContent: 'space-between', 
+      alignItems: 'center',
+      px: 2
+    }}>
+      <Tabs value={activeTab} onChange={handleTabChange}>
+        <Tab label="Текущий мониторинг" value="monitoring" />
+        <Tab label="Исторические данные" value="history" />
+      </Tabs>
+      
+      {activeTab === "monitoring" && (
+        <Box sx={{ py: 1 }}>
+          <Button 
+            variant="contained" 
+            onClick={onCsvUpload}
+            startIcon={<CloudUpload />}
+            sx={{
+              bgcolor: "#4caf50",
+              '&:hover': {
+                bgcolor: "#388e3c",
+              },
+              px: 2,
+              py: 0.75,
+              borderRadius: 1,
+              textTransform: 'none',
+              fontSize: '14px',
+              fontWeight: '500',
+              boxShadow: 1,
+              minWidth: 'auto',
+              color: 'white',
             }}
-          />
-          <Tab 
-            label="Исторические данные" 
-            value="history"
-            sx={{ 
-              fontWeight: activeTab === "history" ? 600 : 400,
-              minHeight: 48,
-              fontSize: "0.875rem"
-            }}
-          />
-        </Tabs>
-        
-        <Button
-          variant="contained"
-          startIcon={<UploadFile />}
-          onClick={onCsvUpload}
-          size="medium"
-          sx={{
-            background: 'linear-gradient(135deg, #4caf50 0%, #2e7d32 100%)',
-            textTransform: 'none',
-            fontSize: '0.875rem',
-            fontWeight: 500,
-            borderRadius: 2,
-            color: '#ffffff',
-            '&:hover': {
-              background: 'linear-gradient(135deg, #43a047 0%, #1b5e20 100%)',
-              transform: 'translateY(-1px)',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-            },
-            '&:disabled': {
-              transform: 'none',
-              boxShadow: 'none',
-            },
-          }}
-        >
-          Загрузить CSV
-        </Button>
-      </Box>
-    </Paper>
+          >
+            Загрузить CSV
+          </Button>
+        </Box>
+      )}
+    </Box>
   );
 }
