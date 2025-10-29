@@ -31,15 +31,13 @@ def login(payload: LoginRequest, db: Session = Depends(get_session)):
     token = create_access_token(
         {"sub": str(user.id), "role": user.role, "name": user.name}
     )
-    return TokenResponse(
-        token=token, user=TokenUser(id=user.id, name=user.name, role=user.role)
-    )
+    return TokenResponse(token=token, user=TokenUser.model_validate(user))
 
 
 @router.post("/check", response_model=TokenUser)
 def check(user: User = Depends(get_current_user)):
     """DEBUG: Проверка валидности токена и получение информации о пользователе."""
-    return TokenUser(id=user.id, name=user.name, role=user.role)
+    return TokenUser.model_validate(user)
 
 
 @router.post("/create_root")
