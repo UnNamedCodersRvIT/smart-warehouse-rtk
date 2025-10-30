@@ -3,7 +3,7 @@ import { createTheme } from '@mui/material/styles';
 export const theme = createTheme({
   palette: {
     primary: {
-      main: '#2196f3', // Голубой вместо оранжевого
+      main: '#2196f3',
       light: '#64b5f6',
       dark: '#1976d2',
     },
@@ -33,7 +33,7 @@ export const theme = createTheme({
           fontSize: '1.1rem',
           fontWeight: 600,
           transition: 'all 0.3s ease',
-          color: '#ffffff', // Белый текст для кнопок
+          color: '#ffffff', 
           '&:hover': {
             transform: 'translateY(-1px)',
             boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
@@ -57,14 +57,14 @@ export const theme = createTheme({
           '& .MuiOutlinedInput-root': {
             borderRadius: 8,
             '&:hover fieldset': {
-              borderColor: '#2196f3', // Голубой при наведении
+              borderColor: '#2196f3',
             },
             '&.Mui-focused fieldset': {
-              borderColor: '#2196f3', // Голубой при фокусе
+              borderColor: '#2196f3',
             },
           },
           '& .MuiInputLabel-root.Mui-focused': {
-            color: '#2196f3', // Голубой цвет для лейбла при фокусе
+            color: '#2196f3', 
           },
         },
       },
@@ -91,9 +91,9 @@ export const theme = createTheme({
     MuiCheckbox: {
       styleOverrides: {
         root: {
-          color: '#2196f3', // Голубой для чекбокса
+          color: '#2196f3',
           '&.Mui-checked': {
-            color: '#2196f3', // Голубой для отмеченного чекбокса
+            color: '#2196f3',
           },
         },
       },
@@ -102,7 +102,7 @@ export const theme = createTheme({
       styleOverrides: {
         label: {
           '&.Mui-focused': {
-            color: '#2196f3', // Голубой для лейбла чекбокса при фокусе
+            color: '#2196f3',
           },
         },
       },
@@ -110,7 +110,6 @@ export const theme = createTheme({
   },
 });
 
-// Дополнительные стили для компонентов
 export const loginStyles = {
   page: {
     minHeight: '100vh',
@@ -147,7 +146,7 @@ export const loginStyles = {
     mt: 3,
     mb: 2,
     py: 1.5,
-    color: '#ffffff !important', // Белый текст для кнопки входа
+    color: '#ffffff !important',
   },
   footer: {
     mt: 4,

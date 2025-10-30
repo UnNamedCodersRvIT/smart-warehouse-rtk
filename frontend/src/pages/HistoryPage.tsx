@@ -3,9 +3,11 @@ import { Box, Typography, Paper } from "@mui/material";
 import { Header } from "../components/Header";
 import { Navigation } from "../components/Navigation";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 export function HistoryPage() {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     document.title = "Исторические данные | Умный склад";
@@ -13,7 +15,8 @@ export function HistoryPage() {
 
   const handleLogout = () => {
     console.log("Выход из системы");
-    navigate("/login");
+    logout();
+    // После logout произойдет автоматический редирект на /login через ProtectedRoute
   };
 
   const handleTabChange = (tab: "monitoring" | "history") => {
@@ -27,8 +30,8 @@ export function HistoryPage() {
   };
 
   const userInfo = {
-    name: "Иван Иванов",
-    role: "Администратор"
+    name: user?.name || "Иван Иванов",
+    role: user?.role || "Администратор"
   };
 
   return (
@@ -59,6 +62,11 @@ export function HistoryPage() {
             Здесь будет отображаться график активности, таблица с историческими данными 
             и аналитика по движениям товаров.
           </Typography>
+          {user && (
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+              Просмотр истории доступен для: {user.role}
+            </Typography>
+          )}
         </Paper>
       </Box>
     </Box>

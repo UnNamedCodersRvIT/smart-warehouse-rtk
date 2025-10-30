@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -12,18 +13,30 @@ import {
   Paper,
 } from "@mui/material";
 import { loginStyles } from "../styles/theme";
+import { useAuth } from "../hooks/useAuth";
 
 export function LoginPage() {
+  const navigate = useNavigate();
+  const { login, isAuthenticated, isLoading, error, clearError } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [emailError, setEmailError] = useState("");
 
   useEffect(() => {
     document.title = "Вход | Умный склад";
-  }, []);
+    
+    // Если уже авторизован - редирект на дашборд
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
+  }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    return () => {
+      clearError();
+    };
+  }, [clearError]);
 
   const validateEmail = (email: string): string => {
     if (!email.trim()) return "";
@@ -66,34 +79,27 @@ export function LoginPage() {
       throw new Error(emailValidationError);
     }
 
-    if (password.length < 6) {
-      throw new Error("Пароль должен содержать минимум 6 символов");
+    //if (password.length < 6) {
+      //throw new Error("Пароль должен содержать минимум 6 символов");
+    //}
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setEmailError("");
+
+    try {
+      validateForm();
+      await login(email, password);
+      // После успешного логина navigate сработает автоматически из useEffect
+    } catch (err) {
+      // Ошибка уже обработана в useAuth, здесь можно добавить дополнительную логику
+      console.error('Login error:', err);
     }
   };
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setLoading(true);
-  setError("");
-
-  try {
-    validateForm();
-
-    // Имитация запроса к API
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    // Простой редирект на dashboard
-    window.location.href = '/dashboard';
-    
-  } catch (err) {
-    setError(err instanceof Error ? err.message : "Ошибка авторизации");
-  } finally {
-    setLoading(false);
-  }
-};
-
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !loading) {
+    if (e.key === 'Enter' && !isLoading) {
       handleSubmit(e);
     }
   };
@@ -146,7 +152,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               value={email}
               onChange={handleEmailChange}
               placeholder="example@rostelecom.ru"
-              disabled={loading}
+              disabled={isLoading}
               error={!!emailError}
               helperText={emailError}
             />
@@ -163,7 +169,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Введите пароль"
-              disabled={loading}
+              disabled={isLoading}
             />
 
             <FormControlLabel
@@ -172,7 +178,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   value="remember"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  disabled={loading}
+                  disabled={isLoading}
                 />
               }
               label="Запомнить меня"
@@ -184,9 +190,9 @@ const handleSubmit = async (e: React.FormEvent) => {
               fullWidth
               variant="contained"
               sx={loginStyles.submitButton}
-              disabled={loading}
+              disabled={isLoading}
             >
-              {loading ? (
+              {isLoading ? (
                 <CircularProgress size={24} sx={{ color: "white" }} />
               ) : (
                 "Войти"
