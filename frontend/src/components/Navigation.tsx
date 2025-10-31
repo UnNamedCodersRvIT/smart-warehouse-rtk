@@ -27,7 +27,8 @@ export function Navigation({ activeTab, onTabChange, onCsvUpload }: NavigationPr
         <Tab label="Исторические данные" value="history" />
       </Tabs>
       
-      {activeTab === "monitoring" && (
+      {/* Кнопка показывается только на странице исторических данных */}
+      {activeTab === "history" && (
         <Box sx={{ py: 1 }}>
           <Button 
             variant="contained" 
