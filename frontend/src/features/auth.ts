@@ -1,17 +1,6 @@
 // frontend/src/features/auth.ts
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-}
-
-interface AuthState {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  error: string | null;
-}
+import { API_BASE_URL } from '../config/api';
+import { User, AuthState } from '../types/auth';
 
 // Глобальное состояние
 let authState: AuthState = {
@@ -20,8 +9,6 @@ let authState: AuthState = {
   isLoading: false,
   error: null,
 };
-
-const API_BASE_URL = 'http://localhost:8000';
 
 // Функция для обновления React состояния
 let updateCallback: (() => void) | null = null;

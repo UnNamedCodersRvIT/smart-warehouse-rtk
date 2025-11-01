@@ -1,6 +1,5 @@
 // frontend/src/utils/api.ts
-
-const API_BASE_URL = 'http://localhost:8000';
+import { API_BASE_URL } from '../config/api';
 
 export const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
   const token = localStorage.getItem('authToken');
