@@ -16,10 +16,11 @@ router = APIRouter(prefix="/api/inventory")
 
 @router.post("/import")
 async def import_csv(
-    file: UploadFile = File(...), db: Session = Depends(get_session), user: User = Depends(get_current_user)
+    file: UploadFile = File(...),
+    db: Session = Depends(get_session),
+    user: User = Depends(get_current_user),
 ):
-    
-    
+
     content = await file.read()
     try:
         text = content.decode("utf-8-sig")
@@ -27,7 +28,10 @@ async def import_csv(
         try:
             text = content.decode("utf-8")
         except Exception:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Unable to decode uploaded file as UTF-8")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Unable to decode uploaded file as UTF-8",
+            )
 
     sample = text[:4096]
     try:
@@ -44,17 +48,29 @@ async def import_csv(
     errors: list[dict] = []
 
     for idx, row in enumerate(reader, start=1):
-        row = {k.strip().lower() if k is not None else k: (v.strip() if isinstance(v, str) else v) for k, v in row.items()}
+        row = {
+            k.strip().lower() if k is not None else k: (
+                v.strip() if isinstance(v, str) else v
+            )
+            for k, v in row.items()
+        }
 
         product_id = row.get("product_id") or row.get("product")
         product_name = row.get("product_name") or row.get("name")
         quantity_raw = row.get("quantity")
         zone = row.get("zone")
-        scanned_at_raw = row.get("scanned_at") or row.get("scannedat") or row.get("date")
+        scanned_at_raw = (
+            row.get("scanned_at") or row.get("scannedat") or row.get("date")
+        )
 
         if not product_id or not quantity_raw or not zone or not scanned_at_raw:
             failed += 1
-            errors.append({"row": idx, "error": "Missing required field(s): product_id, quantity, zone, scanned_at"})
+            errors.append(
+                {
+                    "row": idx,
+                    "error": "Missing required field(s): product_id, quantity, zone, scanned_at",
+                }
+            )
             continue
 
         try:
@@ -80,7 +96,11 @@ async def import_csv(
         scanned_at = None
         for fmt in ("%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
             try:
-                scanned_at = datetime.fromisoformat(scanned_at_raw) if fmt == "%Y-%m-%dT%H:%M:%S" and "T" in scanned_at_raw else datetime.strptime(scanned_at_raw, fmt)
+                scanned_at = (
+                    datetime.fromisoformat(scanned_at_raw)
+                    if fmt == "%Y-%m-%dT%H:%M:%S" and "T" in scanned_at_raw
+                    else datetime.strptime(scanned_at_raw, fmt)
+                )
                 break
             except Exception:
                 scanned_at = None
@@ -89,12 +109,21 @@ async def import_csv(
                 scanned_at = datetime.fromisoformat(scanned_at_raw)
             except Exception:
                 failed += 1
-                errors.append({"row": idx, "error": f"Invalid scanned_at datetime: {scanned_at_raw}"})
+                errors.append(
+                    {
+                        "row": idx,
+                        "error": f"Invalid scanned_at datetime: {scanned_at_raw}",
+                    }
+                )
                 continue
         try:
             product = db.get(Product, product_id)
             if product is None:
-                pname = product_name if (product_name and product_name != "") else product_id
+                pname = (
+                    product_name
+                    if (product_name and product_name != "")
+                    else product_id
+                )
                 product = Product(id=product_id, name=pname)
                 db.add(product)
                 db.commit()
