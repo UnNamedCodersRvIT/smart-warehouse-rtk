@@ -1,14 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
-
-from app.db.session import get_session
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Query
 from sqlalchemy.orm import Session
-from app.db.models import User, Product, InventoryHistory
-
-from app.api.deps import get_current_user
-
 import io
 import csv
 from datetime import datetime
+
+from app.db.session import get_session
+from app.db.models import User, Product, InventoryHistory
+from app.api.deps import get_current_user
+from app.schemas.inventory import InventoryHistoryListResponse, InventoryHistoryItem
 
 
 router = APIRouter(prefix="/api/inventory")
@@ -148,3 +147,45 @@ async def import_csv(
             errors.append({"row": idx, "error": str(exc)})
 
     return {"success": success, "failed": failed, "errors": errors}
+
+
+@router.get("/history", response_model=InventoryHistoryListResponse)
+def get_inventory_history(
+    from_date: datetime | None = Query(None, alias="from"),
+    to_date: datetime | None = Query(None, alias="to"),
+    zone: str | None = None,
+    status: str | None = None,
+    page: int = Query(1, ge=1),
+    per_page: int = Query(50, ge=1, le=1000),
+    db: Session = Depends(get_session),
+    user: User = Depends(get_current_user),
+):
+    query = db.query(InventoryHistory)
+
+    if from_date:
+        query = query.filter(InventoryHistory.scanned_at >= from_date)
+    if to_date:
+        query = query.filter(InventoryHistory.scanned_at <= to_date)
+    if zone:
+        query = query.filter(InventoryHistory.zone == zone)
+    if status:
+        query = query.filter(InventoryHistory.status == status)
+
+    total = query.count()
+
+    offset = (page - 1) * per_page
+    items = (
+        query.order_by(InventoryHistory.scanned_at.desc())
+        .offset(offset)
+        .limit(per_page)
+        .all()
+    )
+    item_schemas = []
+    for item in items:
+        item.product_name = item.product.name if item.product else "Unknown"
+        item_schemas.append(InventoryHistoryItem.model_validate(item))
+
+    pagination = {"page": page, "per_page": per_page, "offset": offset}
+    return InventoryHistoryListResponse(
+        total=total, items=item_schemas, pagination=pagination
+    )
