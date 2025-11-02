@@ -1,8 +1,22 @@
 // frontend/src/features/auth.ts
 import { API_BASE_URL } from '../config/api';
-import { User, AuthState } from '../types/auth';
 
-// Глобальное состояние
+// Объявляем интерфейсы прямо здесь, если файл types/auth.ts не создан
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
+interface AuthState {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: string | null;
+}
+
+// Остальной код без изменений...
 let authState: AuthState = {
   user: null,
   isAuthenticated: false,
@@ -10,8 +24,8 @@ let authState: AuthState = {
   error: null,
 };
 
-// Функция для обновления React состояния
 let updateCallback: (() => void) | null = null;
+
 export const setUpdateCallback = (callback: () => void) => {
   updateCallback = callback;
 };
@@ -73,7 +87,6 @@ export const checkAuth = async (): Promise<void> => {
     try {
       const user = JSON.parse(userData);
       
-      // Проверяем токен на бэкенде
       const response = await fetch(`${API_BASE_URL}/api/auth/check`, {
         method: 'POST',
         headers: {

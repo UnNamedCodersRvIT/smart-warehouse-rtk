@@ -52,8 +52,9 @@ function App() {
   const { checkAuth, isLoading } = useAuth();
 
   useEffect(() => {
+    // Проверяем авторизацию только при первом монтировании
     checkAuth();
-  }, [checkAuth]);
+  }, []); // Убрал checkAuth из зависимостей
 
   if (isLoading) {
     return <LoadingSpinner />;

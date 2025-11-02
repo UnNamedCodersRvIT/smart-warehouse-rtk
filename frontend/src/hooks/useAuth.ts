@@ -4,29 +4,31 @@ import {
   login as authLogin, 
   logout as authLogout, 
   checkAuth as authCheckAuth, 
-  clearError,
+  clearError as authClearError,
   setUpdateCallback,
-  getAuthState,
-  getIsAuthenticated,
-  getIsLoading,
-  getError,
-  getUser
+  getAuthState
 } from '../features/auth';
 
 export const useAuth = () => {
   const [state, setState] = useState(getAuthState);
 
   useEffect(() => {
-    // Устанавливаем callback для обновления состояния
-    setUpdateCallback(() => {
+    console.log('useAuth mounted');
+    
+    const handleUpdate = () => {
+      console.log('State updated');
       setState(getAuthState());
-    });
+    };
 
-    // Проверяем авторизацию при монтировании
-    authCheckAuth();
+    setUpdateCallback(handleUpdate);
+
+    return () => {
+      setUpdateCallback(null);
+    };
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
+    console.log('Login called');
     await authLogin(email, password);
   }, []);
 
@@ -34,22 +36,20 @@ export const useAuth = () => {
     authLogout();
   }, []);
 
-  const checkAuth = useCallback(() => {
-    authCheckAuth();
+  const checkAuth = useCallback(async () => {
+    console.log('checkAuth called');
+    await authCheckAuth();
   }, []);
 
-  const clearAuthError = useCallback(() => {
-    clearError();
+  const clearError = useCallback(() => {
+    authClearError();
   }, []);
 
   return {
-    user: getUser(),
-    isAuthenticated: getIsAuthenticated(),
-    isLoading: getIsLoading(),
-    error: getError(),
+    ...state,
     login,
     logout,
     checkAuth,
-    clearError: clearAuthError,
+    clearError,
   };
 };
