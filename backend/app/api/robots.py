@@ -1,38 +1,33 @@
 from fastapi import APIRouter, Depends, Header, HTTPException
-from pydantic import BaseModel
 from sqlalchemy.orm import Session
-from typing import Optional, Dict, Any
-from datetime import datetime
-import os, uuid
-
+from typing import Optional
+import uuid
 
 from app.db.session import get_session
 from app.db.models import Robot
+from app.schemas.robots import RobotData
 
 
 router = APIRouter(prefix="/api/robots")
-ROBOT_TOKEN = os.getenv("ROBOT_TOKEN", "robot_token")
-
-class RobotData(BaseModel):
-    robot_id: str
-    timestamp: datetime
-    location: Dict[str, Any]
-    scan_results: Dict[str, Any]
-    battery_level: int
 
 
 @router.post("/data")
 def receive_robot_data(
     data: RobotData,
     authorization: Optional[str] = Header(None),
-    db: Session = Depends(get_session)
+    db: Session = Depends(get_session),
 ):
     # --- Проверка токена ---
     if not authorization or not authorization.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Missing or invalid Authorization header")
+        raise HTTPException(
+            status_code=401, detail="Missing or invalid Authorization header"
+        )
 
-    token = authorization.split(" ")[1]
-    if token != ROBOT_TOKEN:
+    token = authorization[7:]
+    if not token.startswith("robot_token_"):
+        raise HTTPException(status_code=403, detail="Invalid robot token")
+    token = token[12:]
+    if data.robot_id != token:
         raise HTTPException(status_code=403, detail="Invalid robot token")
 
     # --- Поиск робота в базе ---
@@ -43,17 +38,33 @@ def receive_robot_data(
     # --- Обновление данных ---
     robot.battery_level = data.battery_level
     robot.last_update = data.timestamp
-
-    # Проверяем наличие данных о местоположении
-    robot.current_zone = data.location.get("zone")
-    robot.current_row = data.location.get("row")
-    robot.current_shelf = data.location.get("shelf")
+    robot.current_zone = data.location.zone
+    robot.current_row = data.location.row
+    robot.current_shelf = data.location.shelf
 
     db.commit()
 
     message_id = str(uuid.uuid4())
 
-    return {
-        "status": "received",
-        "message_id": message_id
-    }
+    return {"status": "received", "message_id": message_id}
+
+
+@router.post("/add")
+def add_robots(
+    db: Session = Depends(get_session),
+):
+    """DEBUG: Добавление 5 роботов в базу данных"""
+    for i in range(1, 6):
+        r = db.query(Robot).filter(Robot.id == f"RB-{i:03d}").first()
+        if r:
+            continue
+        new_robot = Robot(
+            id=f"RB-{i:03d}",
+            battery_level=100.0,
+            current_zone="A",
+            current_row=1,
+            current_shelf=1,
+        )
+        db.add(new_robot)
+        db.commit()
+    return {"robots": db.query(Robot).all()}
