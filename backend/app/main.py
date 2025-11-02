@@ -6,6 +6,7 @@ from app.db.base import Base
 from app.db.session import engine
 from app.api.hello import router as hello_router
 from app.api.auth import router as auth_router
+from app.api.robots import router as robot_router
 from app.api.inventory import router as inventory_router
 
 
@@ -35,6 +36,7 @@ def create_app() -> FastAPI:
     app.include_router(hello_router)
     app.include_router(auth_router)
     app.include_router(inventory_router)
+    app.include_router(robot_router)
 
     return app
 
